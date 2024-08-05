@@ -1,0 +1,17 @@
+﻿@model AddIntervalViewModel
+@{
+    ViewData["Title"] = "Додавання інтервалу";
+}
+
+<div class="text-center">
+    <h1>Редагування @Model.LightOffScheduleGroupNumber черги</h1>
+    <form asp-action="AddInterval" method="post">
+        <label>Черга:</label>
+        <input type="number" asp-for="LightOffScheduleGroupNumber" value="@Model.LightOffScheduleGroupNumber"/> <br/>
+        <label>Від:</label>
+        <input asp-for="@Model.Start" type="time" value="00:00" class="form-control">
+        <label>До:</label>
+        <input asp-for="@Model.End" type="time" value="00:00" class="form-control">
+        <button class="btn btn-primary" type="submit">Додати</button>
+    </form>
+</div>

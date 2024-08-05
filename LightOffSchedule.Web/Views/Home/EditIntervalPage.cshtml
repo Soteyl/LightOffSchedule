@@ -1,0 +1,18 @@
+﻿@model EditIntervalViewModel
+@{
+    ViewData["Title"] = "Редагування";
+}
+
+<div class="text-center">
+    <h1>Редагування @Model.LightOffScheduleGroupNumber черги</h1>
+    <form asp-action="EditInterval" method="post">
+        <input type="number" asp-for="LightOffScheduleGroupNumber" value="@Model.LightOffScheduleGroupNumber" hidden/>
+        <input type="time" asp-for="OldStart" value="@Model.OldStart" hidden/>
+        <input type="time" asp-for="OldEnd" value="@Model.OldEnd" hidden/>
+        <label>Від:</label>
+        <input asp-for="@Model.NewStart" type="time" value="@string.Format("{0:hh\\:mm}", @Model.OldStart)" class="form-control">
+        <label>До:</label>
+        <input asp-for="@Model.NewEnd" type="time" value="@string.Format("{0:hh\\:mm}", @Model.OldEnd)" class="form-control">
+        <button class="btn btn-primary" type="submit">Оновити</button>
+    </form>
+</div>

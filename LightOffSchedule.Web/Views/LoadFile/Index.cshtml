@@ -1,0 +1,21 @@
+﻿@model LoadFileViewModel
+@{
+    ViewData["Title"] = "Завантаження файлу";
+}
+<h1>@ViewData["Title"]</h1>
+
+<p>Завантажте файл (.txt):</p>
+<h3>Формат:</h3>
+<p>Номер Групи/Черги. Час виключення з – Час виключення по; Час виключення з – Час виключення по</p>
+<h4>Приклад:</h4>
+<code>12. 09:00-12:00; 15:00-18:00 <br/>
+    3. 10:00-13:00; 15:00-18:00; 20:00-22:00</code>
+<p>Перетин часу буде обʼєднано. Наприклад, 10:00-12:00 і 11:00-13:00 перетвориться в 10:00-13:00</p>
+
+<form asp-action="LoadFile" asp-controller="LoadFile" enctype="multipart/form-data">
+    <div class="form-group">
+        <input style="margin-top: 10px;" asp-for="File" class="form-control" type="file" accept=".txt" required/>
+        <span asp-validation-for="File" class="text-danger"></span>
+    </div>
+    <button style="margin-top: 10px;"  type="submit" class="btn btn-primary">Завантажити</button>
+</form>

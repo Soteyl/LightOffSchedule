@@ -1,0 +1,101 @@
+﻿@using Microsoft.AspNetCore.Mvc.TagHelpers
+@using Newtonsoft.Json
+@model HomeViewModel
+@{
+    ViewData["Title"] = "Перегляд";
+}
+
+<div class="text-center">
+    @if (Model?.NowLightOffSchedules is { Count: > 0 })
+    {
+        <h1>Зараз о @DateTime.Now.ToString("hh:mm") немає світла у цих черг: </h1>
+        <table class="table table-bordered table-striped table-condensed">
+            <thead>
+            <tr>
+                <th>Черга</th>
+                <th>Коли вимкнули</th>
+                <th>Коли увімкнуть</th>
+            </tr>
+            </thead>
+            <tbody>
+            @foreach(var item in Model.NowLightOffSchedules)
+            {
+                <tr>
+                    <td>@Html.DisplayFor(modelItem => item.GroupNumber)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Intervals!.First().Start)</td>
+                    <td>@Html.DisplayFor(modelItem => item.Intervals!.First().End)</td>
+                </tr>
+            }
+            </tbody>
+        </table>
+    }
+    else if (Model?.LightOffSchedules is { Count: > 0 })
+    {
+        <h1>Зараз у всіх є світло!</h1>
+    }
+
+    @if (Model?.LightOffSchedules is not { Count: > 0 })
+    {
+        <h1>Графіків відключень не знайдено. Якщо вони ще не завантажені, то перейдіть на сторінку "Завантаження файлу", і завантажте файл</h1>
+    }
+    else
+    {
+        <form id="downloadForm" asp-action="DownloadJson" method="post">
+            <input type="hidden" asp-for="SearchGroup"/>
+            <button class="btn btn-primary" type="submit">Завантажити Json</button>
+        </form>
+        <h1>Графік відключень:</h1>
+
+        @foreach (var item in Model.LightOffSchedules)
+        {
+            <table class="table table-bordered table-striped table-condensed">
+                <thead>
+                <tr>
+                    <th>Від</th>
+                    <th>До</th>
+                    <th></th>
+                </tr>
+                </thead>
+                <h2>@item.GroupNumber черга</h2>
+                <tbody>
+                @foreach (var interval in item.Intervals ?? [])
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => interval.Start)</td>
+                        <td>@Html.DisplayFor(modelItem => interval.End)</td>
+                        <td style="width: 1px; white-space: nowrap;">
+                            <div style="width: 100%; margin: 0 auto;">
+                                <form style="width: 100px; display: inline-block;" asp-action="EditIntervalPage" method="get">
+                                    <input type="time" value="@interval.Start" name="OldStart" hidden/>
+                                    <input type="time" value="@interval.End" name="OldEnd" hidden/>
+                                    <input type="number" value="@item.GroupNumber" name="LightOffScheduleGroupNumber" hidden/>
+                                    <button type="submit" class="btn btn-primary">Edit</button>
+                                </form>
+
+                                <form style="width: 100px; display: inline-block;" asp-action="DeleteInterval" method="post">
+                                    <input type="time" value="@interval.Start" name="Start" hidden/>
+                                    <input type="time" value="@interval.End" name="End" hidden/>
+                                    <input type="number" value="@item.GroupNumber" name="LightOffScheduleGroupNumber" hidden/>
+                                    <button style="background-color: red" class="btn btn-primary">Delete</button>
+                                </form>
+                            </div>
+                        </td>
+                    </tr>
+                }
+                <tr>
+                    <td/>
+                    <td/>
+                    <td>
+                        <form asp-action="AddIntervalPage" method="get">
+                            <input type="number" value="@item.GroupNumber" name="LightOffScheduleGroupNumber" hidden/>
+                            <button style="background-color: green" class="btn btn-primary">
+                                <strong>+</strong> Додати
+                            </button>
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        }
+    }
+</div>
